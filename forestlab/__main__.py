@@ -4,9 +4,16 @@ from .core import votes,trace
 from .controls import scores
 from .export import export
 
+def _unique(pairs):
+    obj={}
+    for k,v in pairs:
+        if k in obj:raise ValueError('duplicate JSON key')
+        obj[k]=v
+    return obj
+
 def main():
     p=argparse.ArgumentParser(description='Historical numeric classification forests, not banknote authentication or calibrated confidence.');s=p.add_subparsers(dest='command',required=True)
-    s.add_parser('report');f=s.add_parser('fit');f.add_argument('--output',required=True);a=s.add_parser('audit');a.add_argument('--report');q=s.add_parser('predict');q.add_argument('--input',required=True);w=s.add_parser('witness');w.add_argument('--group',type=int,default=0);w.add_argument('--tree',type=int,default=0);d=s.add_parser('permutation');d.add_argument('--output');d.add_argument('--fresh',action='store_true');d.add_argument('--audit',action='store_true');d.add_argument('--input');d.add_argument('--export');e=s.add_parser('export');e.add_argument('--output',required=True);args=p.parse_args()
+    s.add_parser('report');f=s.add_parser('fit');f.add_argument('--output',required=True);a=s.add_parser('audit');a.add_argument('--report');q=s.add_parser('predict');q.add_argument('--input',required=True);w=s.add_parser('witness');w.add_argument('--group',type=int,default=0);w.add_argument('--tree',type=int,default=0);d=s.add_parser('permutation');d.add_argument('--output');d.add_argument('--fresh',action='store_true');d.add_argument('--audit',action='store_true');d.add_argument('--input');d.add_argument('--export');z=s.add_parser('proximity');z.add_argument('--input',required=True);z.add_argument('--model-id');s.add_parser('proximity-controls');z=s.add_parser('proximity-export');z.add_argument('--output',required=True);e=s.add_parser('export');e.add_argument('--output',required=True);args=p.parse_args()
     try:
         r=run() if args.command=='fit' else saved()
         if args.command=='fit':save(r,args.output)
@@ -24,6 +31,24 @@ def main():
             elif args.export:result=perm.export(args.export)
             else:result={k:obj[k] for k in ['scope','partition','repeats','model_ids','baseline']}
             if args.output:perm.save(obj,args.output)
+        elif args.command=='proximity':
+            from . import proximity as prox
+            obj=json.load(open(args.input),object_pairs_hook=_unique)
+            c=next((c for c in r['candidates'] if c['id']==(args.model_id or r['selected_id'])),None)
+            if c is None:raise ValueError('known frozen forest ID required')
+            if set(obj)=={'groups'}:result=prox.indexed(c['model'],r['data'],obj['groups'])
+            elif set(obj)=={'features'}:
+                X=obj['features']
+                if not isinstance(X,list) or len(X)!=2 or any(not isinstance(row,list) or len(row)!=4 or any(type(v) not in (int,float) for v in row) for row in X):raise ValueError('two four-number rows required')
+                result=prox.pair(c['model'],*X)
+            else:raise ValueError('exactly groups or features required')
+            result['model_id']=c['id']
+        elif args.command=='proximity-controls':
+            from .proximity import controls
+            result=controls()
+        elif args.command=='proximity-export':
+            from .proximity_export import export as proximity_export
+            result=proximity_export(args.output)
         elif args.command=='export':result=export(args.output)
         elif args.command=='predict':
             obj=json.load(open(args.input));X=obj['features']
