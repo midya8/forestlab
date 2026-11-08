@@ -1,5 +1,5 @@
 """Original bytes, exact-feature grouping and fixed group-level partitions."""
-import hashlib
+import hashlib,base64
 from importlib.resources import files
 import numpy as np
 
@@ -10,7 +10,7 @@ FEATURES=['wavelet variance','wavelet skewness','wavelet curtosis','image entrop
 SEED=20261108
 
 def load():
-    raw=files('forestlab').joinpath('data/data_banknote_authentication.txt').read_bytes()
+    raw=base64.b64decode(files('forestlab').joinpath('data/data_banknote_authentication.b64').read_text().strip(),validate=True)
     if hashlib.sha256(raw).hexdigest()!=SHA256:raise ValueError('original data hash mismatch')
     rows=np.array([[float(s) for s in line.split(',')] for line in raw.decode().splitlines() if line])
     if rows.shape!=(1372,5) or not np.isfinite(rows).all() or not np.isin(rows[:,4],[0,1]).all():raise ValueError('original schema mismatch')
