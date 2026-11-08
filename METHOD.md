@@ -81,3 +81,7 @@ Exact source matching and discrete outputs are separate from finite floating-poi
 Original educational implementation of established methods. No invented algorithm credit, runtime model call or source endorsement.
 
 Packaging: the full report is stored as gzip/base64 with a SHA-256 of its decompressed JSON. Python and the browser verify that digest before reading it. The browser uses native DecompressionStream and Web Crypto; Node22+/current Chrome are tested. This packaging is lossless and does not change a fit, source value, split or score. The export forwards the exact checked archive rather than depending on platform-specific compression.
+
+## Frozen geometry extension
+
+Version 0.3 adds leaf-collision and jointly-OOB pair diagnostics without altering the original experiment. The all-tree PSD identity and exact negative OOB control are described in [PROXIMITY.md](PROXIMITY.md). These are model-geometry descriptions, not new predictions or statistical validation.
