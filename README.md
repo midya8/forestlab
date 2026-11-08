@@ -8,6 +8,19 @@ The validation-selected 31-tree forest makes **3 errors on 270 test feature grou
 
 This is an educational benchmark on the original UCI numeric image descriptors. It does not authenticate banknotes, identify currencies or establish independent specimen performance. Class labels stay `0` and `1`: the source does not explicitly map them to physical genuine/forged status. Vote fractions, leaf fractions and nearest-neighbor fractions are not calibrated probabilities or confidence intervals.
 
+## New in v0.2: joint permutation audit
+
+[Open the joint permutation inspector](https://midya8.github.io/forestlab/permutation.html). Freeze the selected forest and its stronger 5NN control; move each of the **15 nonempty feature blocks** using the same **16 fixed row bijections**. All 240 cases and **129,600 model-row prediction counts** stay visible, including negative error changes. Follow a donor/recipient row, inspect all repeats on a shared scale and download the full witness.
+
+This reuses the validation set that already selected the models, not a fresh test set. Within-block values move together; recipient labels stay put. A three-row exact control shows how singleton masking can leave observed support while joint masking does not. Joint changes are not additive or isolated causal interactions. Shuffle ranges are not confidence intervals, vote fractions are not calibrated confidence, and no feature-removal refit or reselection is performed. Original training, models, splits and test scores are unchanged. See [PERMUTATION.md](PERMUTATION.md).
+
+```bash
+python -m forestlab permutation
+python -m forestlab permutation --fresh --output /tmp/permutation.json
+python -m forestlab permutation --input /tmp/permutation.json --audit
+python -m forestlab permutation --export /tmp/permutation-web
+```
+
 ## Run offline
 
 ```bash
@@ -46,7 +59,7 @@ Nearest-neighbor standardization uses train means/scales only. Logistic regulari
 
 ## Checks
 
-**20 Python tests and five Node/real-Chrome tests** cover:
+**31 Python tests and nine Node/real-Chrome tests** cover:
 
 - 60 tiny independent Fraction split oracles, independently enumerated again with JavaScript BigInt mask counts;
 - fresh reproduction of every forest, single tree and fitted control, full bootstrap/source/node audits, training-only preprocessing and final logistic stationarity;
@@ -55,7 +68,7 @@ Nearest-neighbor standardization uses train means/scales only. Logistic regulari
 - 10,784 native/scalar-JavaScript forest evaluations, 8,088 control scores, 6,464 OOB eligibility lists and 992 complete path witnesses;
 - actual Chrome form states for every model and partition, all 992 paths, physical-keyboard feature edits that drop membership, invalid-input clearing/recovery, clipboard success/failure, JSON Blob download and 320/390/1280px layouts.
 
-The installed-wheel check imports every module outside the checkout, runs all six commands, re-fits and audits every candidate, and reproduces both web exports. Floating numerical comparisons use finite bounds; original source, source grouping, discrete votes, paths and checked archive exports have exact checks. Regenerated control-score references allow only finite numerical agreement across platforms. See [METHOD.md](METHOD.md) for formulas, conventions, evidence and limits.
+The installed-wheel check imports all eight modules including the root outside the checkout, runs all seven commands, re-fits and audits every candidate, and reproduces the original and permutation web exports. The added diagnostic has all-case native/scalar checks, strict CLI controls, exact tiny permutation oracles and 1,230 actual browser states; see PERMUTATION.md. Floating numerical comparisons use finite bounds; original source, source grouping, discrete votes, paths and checked archive exports have exact checks. Regenerated control-score references allow only finite numerical agreement across platforms. See [METHOD.md](METHOD.md) for formulas, conventions, evidence and limits.
 
 ## Source and license
 
