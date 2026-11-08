@@ -1,4 +1,6 @@
 'use strict';
+globalThis.FOREST_READY.then(()=>{
+'use strict';
 const R=globalThis.FOREST_DATA,D=R.data,I=globalThis.ForestInference,$=id=>document.getElementById(id),fmt=x=>x.toFixed(6);let groupId=null,treeId=0,last=null;
 function option(value,text){const o=document.createElement('option');o.value=value;o.textContent=text;return o;}
 const selected=next(R.candidates,R.selected_id),baseline=next(R.controls,R.selected_control_id),single=next(R.singles,R.selected_single_id);
@@ -21,3 +23,5 @@ $('audit-summary').textContent='Eight forests / 248 bootstraps / '+R.candidates.
 $('partition').addEventListener('change',samples);$('sample').addEventListener('change',restore);$('reset').addEventListener('click',restore);$('model').addEventListener('change',render);$('tree').addEventListener('change',()=>{treeId=Number($('tree').value);render();});$('copy').addEventListener('click',async()=>{if(!last){$('copy-status').textContent='Fix the inputs before copying.';return;}try{await navigator.clipboard.writeText(JSON.stringify(last,null,2));$('copy-status').textContent='Witness JSON copied.';}catch{$('copy-status').textContent='Clipboard unavailable. Use Download JSON or select the witness text.';}});$('download').addEventListener('click',()=>{if(!last)return;const blob=new Blob([JSON.stringify(last,null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='forestlab-witness.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});samples();
 
 globalThis.ForestApp={getWitness:()=>last,render,restore};
+
+}).catch(e=>{document.getElementById('query-note').textContent='Could not load verified report: '+e.message;});
