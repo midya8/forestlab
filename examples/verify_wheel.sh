@@ -11,8 +11,8 @@ python - <<'PY'
 import importlib,pkgutil,forestlab
 mods=list(pkgutil.walk_packages(forestlab.__path__,forestlab.__name__+'.'))
 for m in mods:importlib.import_module(m.name)
-assert len(mods)==7,[m.name for m in mods]
-print('all eight modules including root imported outside checkout')
+assert len(mods)==9,[m.name for m in mods]
+print('all ten modules including root imported outside checkout')
 PY
 python -m forestlab report > report.json
 python -m forestlab audit > audit.json
@@ -56,3 +56,21 @@ PY2
 cmp perm-web/permutation-data.js "$source/docs/permutation-data.js"
 cmp perm-web/permutation-archive-0.js "$source/docs/permutation-archive-0.js"
 printf '%s\n' 'seventh command: all240 post-fit cases/129600 model-row evaluations, fresh and archived audits and two exact exports PASS'
+
+# New frozen geometry commands are also exercised outside the source checkout.
+printf '%s\n' '{"groups":[750,947,704]}' > proximity-input.json
+python -m forestlab proximity --input proximity-input.json > proximity-pair.json
+python -m forestlab proximity-controls > proximity-controls.json
+python -m forestlab proximity-export --output proximity-web > proximity-export.json
+python - <<'PY3'
+import json
+from forestlab.proximity import quadratic
+p=json.load(open('proximity-pair.json'))
+q=quadratic(p['leaf_codes'],[1,-2,1])
+assert q['numerator']==q['sum_of_squares']
+assert json.load(open('proximity-controls.json'))['indefinite']['oob_quadratic']==-2
+assert json.load(open('proximity-export.json'))['heatmap_pairs']==4608
+PY3
+cmp proximity-web/proximity-data.js "$source/docs/proximity-data.js"
+cmp proximity-web/proximity-reference.json "$source/docs/proximity-reference.json"
+printf '%s\n' 'ten commands/ten modules: frozen leaf/OOB geometry, exact Gram and negative controls; two new exact exports PASS'
