@@ -6,7 +6,7 @@ from .export import export
 
 def main():
     p=argparse.ArgumentParser(description='Historical numeric classification forests, not banknote authentication or calibrated confidence.');s=p.add_subparsers(dest='command',required=True)
-    s.add_parser('report');f=s.add_parser('fit');f.add_argument('--output',required=True);a=s.add_parser('audit');a.add_argument('--report');q=s.add_parser('predict');q.add_argument('--input',required=True);w=s.add_parser('witness');w.add_argument('--group',type=int,default=0);w.add_argument('--tree',type=int,default=0);e=s.add_parser('export');e.add_argument('--output',required=True);args=p.parse_args()
+    s.add_parser('report');f=s.add_parser('fit');f.add_argument('--output',required=True);a=s.add_parser('audit');a.add_argument('--report');q=s.add_parser('predict');q.add_argument('--input',required=True);w=s.add_parser('witness');w.add_argument('--group',type=int,default=0);w.add_argument('--tree',type=int,default=0);d=s.add_parser('permutation');d.add_argument('--output');d.add_argument('--fresh',action='store_true');d.add_argument('--audit',action='store_true');d.add_argument('--input');d.add_argument('--export');e=s.add_parser('export');e.add_argument('--output',required=True);args=p.parse_args()
     try:
         r=run() if args.command=='fit' else saved()
         if args.command=='fit':save(r,args.output)
@@ -14,6 +14,16 @@ def main():
             result={k:r[k] for k in ['scope','selected_id','selected_control_id','selected_single_id']}
             result['models']=[dict(id=c['id'],validation=c['validation'],test=c['test']) for category in ['candidates','controls','singles'] for c in r[category]]
         elif args.command=='audit':result=audit(json.load(open(args.report)) if args.report else r)
+        elif args.command=='permutation':
+            from . import permutation as perm
+            if args.fresh and args.input:raise ValueError('--fresh and --input are mutually exclusive')
+            if args.input and not args.audit:raise ValueError('--input requires --audit')
+            if args.export and (args.fresh or args.input or args.audit or args.output):raise ValueError('--export cannot be combined with generation, input, audit or output')
+            obj=perm.compute(r) if args.fresh else (json.load(open(args.input)) if args.input else perm.saved())
+            if args.audit:result=perm.audit(obj,r)
+            elif args.export:result=perm.export(args.export)
+            else:result={k:obj[k] for k in ['scope','partition','repeats','model_ids','baseline']}
+            if args.output:perm.save(obj,args.output)
         elif args.command=='export':result=export(args.output)
         elif args.command=='predict':
             obj=json.load(open(args.input));X=obj['features']
