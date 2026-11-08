@@ -2,7 +2,7 @@
 
 ## Unit and split
 
-The original UCI file is kept byte-exact under CC BY 4.0. Its 1,372 records contain 1,348 unique four-feature vectors. A group keeps all original zero-based row IDs and its original label. Conflicting exact-copy labels would reject the source; none exist here. Collapse each group to one fitting/scoring observation before the fixed group permutation and 808/270/270 partition. This prevents exact feature copies from appearing in two partitions. It cannot identify near-duplicates or physical specimen overlap: the source has no specimen IDs. Grouping is not a proof of independent observations.
+The original UCI bytes are retained in a checked base64 transport file under CC BY 4.0. Its 1,372 records contain 1,348 unique four-feature vectors. A group keeps all original zero-based row IDs and its original label. Conflicting exact-copy labels would reject the source; none exist here. Collapse each group to one fitting/scoring observation before the fixed group permutation and 808/270/270 partition. This prevents exact feature copies from appearing in two partitions. It cannot identify near-duplicates or physical specimen overlap: the source has no specimen IDs. Grouping is not a proof of independent observations.
 
 The four features are wavelet-image variance, skewness, `curtosis` (source spelling), and image entropy. These are precomputed historical descriptors, not raw pixels. No image classifier, image upload or currency detector is implemented. The target mapping to genuine/forged is not explicitly defined by the source, so all code and UI use labels 0 and 1.
 
@@ -79,3 +79,5 @@ Exact source matching and discrete outputs are separate from finite floating-poi
 - Angelopoulos/Bates, *A Gentle Introduction to Conformal Prediction*, revised 2022: https://arxiv.org/html/2107.07511 . Marginal coverage requires appropriate calibration/exchangeability assumptions. This project does not implement or claim conformal coverage; vote disagreement alone does not supply it.
 
 Original educational implementation of established methods. No invented algorithm credit, runtime model call or source endorsement.
+
+Packaging: the full report is stored as gzip/base64 with a SHA-256 of its decompressed JSON. Python and the browser verify that digest before reading it. The browser uses native DecompressionStream and Web Crypto; Node22+/current Chrome are tested. This packaging is lossless and does not change a fit, source value, split or score. The export forwards the exact checked archive rather than depending on platform-specific compression.
