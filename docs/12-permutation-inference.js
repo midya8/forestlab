@@ -1,0 +1,7 @@
+'use strict';
+(function(root){
+ function hybrid(rows,features,donor){if(!Array.isArray(rows)||rows.length<1||!Array.isArray(features)||!features.length||new Set(features).size!==features.length||features.some(f=>!Number.isInteger(f)||f<0||f>=rows[0].length)||!Array.isArray(donor)||donor.length!==rows.length||new Set(donor).size!==rows.length||donor.some(i=>!Number.isInteger(i)||i<0||i>=rows.length)||rows.some(row=>row.length!==rows[0].length||row.some(v=>typeof v!=='number'||!Number.isFinite(v))))throw Error('Valid rows, feature block and full donor bijection required');return rows.map((row,i)=>row.map((v,j)=>features.includes(j)?rows[donor[i]][j]:v));}
+ function metric(counts,d,y){if(!Number.isInteger(d)||d<1||counts.length!==y.length||!counts.length||counts.some(v=>!Number.isInteger(v)||v<0||v>d)||y.some(v=>v!==0&&v!==1))throw Error('Invalid integer score counts');let errors=0,brier=0;const confusion=[[0,0],[0,0]];counts.forEach((v,i)=>{const pred=2*v>d?1:0;errors+=Number(pred!==y[i]);brier+=(v/d-y[i])**2;confusion[y[i]][pred]++;});return {n:y.length,errors,error:errors/y.length,brier:brier/y.length,confusion};}
+ function deltaSummary(block,model){const a=block.runs.map(r=>r.error_delta[model]);return {minimum:Math.min(...a),mean:a.reduce((s,v)=>s+v,0)/a.length,maximum:Math.max(...a)};}
+ const api={hybrid,metric,deltaSummary};root.PermutationInference=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(globalThis);
