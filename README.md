@@ -55,7 +55,7 @@ Nearest-neighbor standardization uses train means/scales only. Logistic regulari
 - 10,784 native/scalar-JavaScript forest evaluations, 8,088 control scores, 6,464 OOB eligibility lists and 992 complete path witnesses;
 - actual Chrome form states for every model and partition, all 992 paths, physical-keyboard feature edits that drop membership, invalid-input clearing/recovery, clipboard success/failure, JSON Blob download and 320/390/1280px layouts.
 
-The installed-wheel check imports every module outside the checkout, runs all six commands, re-fits and audits every candidate, and reproduces both web exports. Floating numerical comparisons use finite bounds; original source, source grouping, discrete votes and published exports have stronger exact checks. See [METHOD.md](METHOD.md) for formulas, conventions, evidence and limits.
+The installed-wheel check imports every module outside the checkout, runs all six commands, re-fits and audits every candidate, and reproduces both web exports. Floating numerical comparisons use finite bounds; original source, source grouping, discrete votes, paths and checked archive exports have exact checks. Regenerated control-score references allow only finite numerical agreement across platforms. See [METHOD.md](METHOD.md) for formulas, conventions, evidence and limits.
 
 ## Source and license
 
