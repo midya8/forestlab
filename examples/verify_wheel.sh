@@ -33,4 +33,5 @@ print('all six commands, nineteen fresh fits and complete audits pass outside ch
 PY
 cmp web/data.js "$source/docs/data.js"
 cmp web/reference.json "$source/docs/reference.json"
+for n in 0 1 2 3; do cmp "web/archive-$n.js" "$source/docs/archive-$n.js"; done
 printf '%s\n' 'both exports reproduce byte-exact outside checkout'
