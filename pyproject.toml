@@ -14,4 +14,4 @@ license = "MIT"
 include = ["forestlab*"]
 
 [tool.setuptools.package-data]
-forestlab = ["data/*.txt", "data/*.md", "artifacts/*.json"]
+forestlab = ["data/*.b64", "data/*.md", "artifacts/*.json", "artifacts/*.b64"]
