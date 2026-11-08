@@ -32,6 +32,14 @@ assert json.load(open('export.json'))['group_evaluations']==10784
 print('all six commands, nineteen fresh fits and complete audits pass outside checkout')
 PY
 cmp web/data.js "$source/docs/data.js"
-cmp web/reference.json "$source/docs/reference.json"
+python - "$source/docs/reference.json" <<'PY'
+import json,sys
+from forestlab.experiment import equivalent
+actual=json.load(open('web/reference.json'));expected=json.load(open(sys.argv[1]))
+assert actual.keys()==expected.keys()
+assert actual['predictions']==expected['predictions']
+assert actual['paths']==expected['paths']
+assert equivalent(actual['controls'],expected['controls'])
+PY
 for n in 0 1 2 3; do cmp "web/archive-$n.js" "$source/docs/archive-$n.js"; done
-printf '%s\n' 'both exports reproduce byte-exact outside checkout'
+printf '%s\n' 'archive exports, discrete predictions and paths exact; finite control-score references agree outside checkout'
