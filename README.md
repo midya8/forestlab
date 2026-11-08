@@ -77,3 +77,9 @@ Original data: Lohweg, V. (2012), *Banknote Authentication*, UCI Machine Learnin
 Established CART, bootstrap aggregation and random-forest methods are attributed to their sources in METHOD.md. This is an original educational implementation, not a new learning algorithm or an official UCI authentication tool.
 
 Packaging: the full report is stored as gzip/base64 with a SHA-256 of its decompressed JSON. Python and the browser verify that digest before reading it. The browser uses native DecompressionStream and Web Crypto; Node22+/current Chrome are tested. This packaging is lossless and does not change a fit, source value, split or score. The export forwards the exact checked archive rather than depending on platform-specific compression.
+
+## v0.3 / Frozen leaf-collision geometry
+
+The [leaf-collision inspector](https://midya8.github.io/forestlab/proximity.html) exposes all-tree proximity as an explicit leaf-indicator Gram matrix, with exact integer/BigInt sum-of-squares witnesses. A separate jointly-OOB view retains every pair's eligible denominator and undefined entries. A constructed three-row table gives an exact negative OOB quadratic form (-2) and a triangle-inequality failure; it does not claim that every OOB matrix is indefinite. Feature-only edits cannot borrow training identity.
+
+39 Python and 12 Node/Chrome tests cover exhaustive 512 small partition tables, 6,272 direct source-pair checks, complete 1,152 mixed-partition and 4,608 heatmap references, 1,152 actual pair UI states and 13,824 heatmap colors. Ten-module/ten-command installed reproduction retains all original fresh fits and permutation audits. Original models, data, bootstrap counts and results stay unchanged. Model geometry is not semantic similarity, uncertainty, causal influence or new predictive performance. [Equations, source discrepancy and limits](PROXIMITY.md).
