@@ -15,7 +15,7 @@ def export(root):
         chunk=files('forestlab').joinpath('artifacts/'+name).read_text().strip()
         (root/('archive-'+str(i)+'.js')).write_text('globalThis.FOREST_ARCHIVE_PARTS=globalThis.FOREST_ARCHIVE_PARTS||[];globalThis.FOREST_ARCHIVE_PARTS.push('+json.dumps(chunk)+');\n')
     text='globalThis.FOREST_ARCHIVE='+packed+";\nglobalThis.FOREST_READY=(async()=>{const p=globalThis.FOREST_ARCHIVE;const bytes=Uint8Array.from(atob(globalThis.FOREST_ARCHIVE_PARTS.join('')),c=>c.charCodeAt(0));const decoded=new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',decoded))).map(v=>v.toString(16).padStart(2,'0')).join('');if(digest!==p.sha256)throw Error('Report digest mismatch');globalThis.FOREST_DATA=JSON.parse(new TextDecoder().decode(decoded));return globalThis.FOREST_DATA;})();\n"
-    (root/'data.js').write_text(text)
+    (root/'data.js').write_bytes(text.replace('\n','\r\n').encode())
     X=[g['x'] for g in r['data']['groups']];pred=[]
     for c in r['candidates']:
         out=votes(c['model'],X);pred.append(dict(id=c['id'],fraction_one=out['fraction_one'],prediction=out['prediction']))
