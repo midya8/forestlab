@@ -14,7 +14,7 @@ def main():
             result={k:r[k] for k in ['scope','selected_id','selected_control_id','selected_single_id']}
             result['models']=[dict(id=c['id'],validation=c['validation'],test=c['test']) for category in ['candidates','controls','singles'] for c in r[category]]
         elif args.command=='audit':result=audit(json.load(open(args.report)) if args.report else r)
-        elif args.command=='export':result=export(args.output,r)
+        elif args.command=='export':result=export(args.output)
         elif args.command=='predict':
             obj=json.load(open(args.input));X=obj['features']
             if set(obj)!={'features'} or not isinstance(X,list) or not X or any(not isinstance(row,list) or len(row)!=4 or any(type(v) not in (float,int) for v in row) for row in X):raise ValueError('features must be nonempty arrays of four numbers')
