@@ -1,5 +1,5 @@
 """Frozen selection protocol. Test labels are read only after all selections."""
-import json,hashlib,math
+import json,hashlib,math,gzip,base64
 from importlib.resources import files
 from pathlib import Path
 import numpy as np
@@ -47,7 +47,12 @@ def save(report,path):
     Path(path).write_text(json.dumps(report,separators=(',',':'),allow_nan=False)+'\n')
 
 def saved():
-    return json.loads(files('forestlab').joinpath('artifacts/report.json').read_text())
+    packed=json.loads(files('forestlab').joinpath('artifacts/report.json').read_text())
+    if packed['encoding']!='gzip-base64':raise ValueError('unknown artifact encoding')
+    encoded=''.join(files('forestlab').joinpath('artifacts/'+name).read_text().strip() for name in packed['parts'])
+    raw=gzip.decompress(base64.b64decode(encoded,validate=True))
+    if hashlib.sha256(raw).hexdigest()!=packed['sha256']:raise ValueError('report digest mismatch')
+    return json.loads(raw)
 
 def audit_tree(model,X,y):
     nodes=model['nodes'];seen=[]
