@@ -13,7 +13,7 @@ class CLITests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path=Path(tmp)/'fresh.json';self.command('fit','--output',str(path));self.assertTrue(equivalent(json.loads(path.read_text()),saved()));self.command('audit','--report',str(path))
             root=Path(tmp)/'docs';summary=json.loads(self.command('export','--output',str(root)).stdout);self.assertEqual(summary['group_evaluations'],10784);base=Path(__file__).resolve().parents[1]/'docs'
-            for name in ['data.js','reference.json']:self.assertEqual((root/name).read_bytes(),(base/name).read_bytes())
+            for name in ['data.js','reference.json','archive-0.js','archive-1.js','archive-2.js','archive-3.js']:self.assertEqual((root/name).read_bytes(),(base/name).read_bytes())
     def test_predict_and_strict_errors(self):
         with tempfile.TemporaryDirectory() as tmp:
             path=Path(tmp)/'input.json';path.write_text(json.dumps({'features':[[0,0,0,0]]}));r=json.loads(self.command('predict','--input',str(path)).stdout);self.assertEqual(len(r['forest']['votes'][0]),31)
