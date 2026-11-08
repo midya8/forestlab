@@ -11,8 +11,8 @@ python - <<'PY'
 import importlib,pkgutil,forestlab
 mods=list(pkgutil.walk_packages(forestlab.__path__,forestlab.__name__+'.'))
 for m in mods:importlib.import_module(m.name)
-assert len(mods)==6,[m.name for m in mods]
-print('all seven modules including root imported outside checkout')
+assert len(mods)==7,[m.name for m in mods]
+print('all eight modules including root imported outside checkout')
 PY
 python -m forestlab report > report.json
 python -m forestlab audit > audit.json
@@ -43,3 +43,16 @@ assert equivalent(actual['controls'],expected['controls'])
 PY
 for n in 0 1 2 3; do cmp "web/archive-$n.js" "$source/docs/archive-$n.js"; done
 printf '%s\n' 'archive exports, discrete predictions and paths exact; finite control-score references agree outside checkout'
+
+python -m forestlab permutation --fresh --output permutation.json > permutation-summary.json
+python -m forestlab permutation --input permutation.json --audit > permutation-audit.json
+python -m forestlab permutation --export perm-web > permutation-export.json
+python - <<'PY2'
+import json
+from forestlab.permutation import saved
+assert json.load(open('permutation.json'))==saved()
+assert json.load(open('permutation-audit.json'))['model_row_evaluations']==129600
+PY2
+cmp perm-web/permutation-data.js "$source/docs/permutation-data.js"
+cmp perm-web/permutation-archive-0.js "$source/docs/permutation-archive-0.js"
+printf '%s\n' 'seventh command: all240 post-fit cases/129600 model-row evaluations, fresh and archived audits and two exact exports PASS'
