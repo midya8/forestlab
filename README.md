@@ -1,14 +1,22 @@
 # ForestLab
 
-From-scratch binary CART forests with exact integer Gini split ordering, full bootstrap-count witnesses and an editable browser that distinguishes all-tree votes from out-of-bag votes. No estimator library, model API, private data or account is needed to run it.
+ForestLab fits binary CART forests to the UCI Banknote Authentication numeric descriptors. It orders Gini split candidates using exact integer comparisons and retains every bootstrap count. An editable browser separates all-tree predictions from votes made only by trees that did not train on a given group.
 
-## A strong control stays
+Three inspectors use the same frozen fits:
+
+- Original predictions and paths: compare the forest with the single-tree, logistic and nearest-neighbor controls; inspect bootstrap and out-of-bag membership.
+- [Joint permutation](https://midya8.github.io/forestlab/permutation.html): move supplied feature blocks using fixed row bijections. See [PERMUTATION.md](PERMUTATION.md).
+- [Leaf collisions](https://midya8.github.io/forestlab/proximity.html): compare all-tree proximity with the separately normalized jointly-out-of-bag view. See [PROXIMITY.md](PROXIMITY.md).
+
+No estimator library, model API, private data or account is needed.
+
+## The stronger control has fewer errors
 
 The validation-selected 31-tree forest makes **3 errors on 270 test feature groups**. The independently validation-selected 5-nearest-neighbor control makes **0/270**, and the selected single tree makes **8/270**. All candidates and the stronger control remain visible. Zero errors on this one historical split are not zero future risk.
 
 This is an educational benchmark on the original UCI numeric image descriptors. It does not authenticate banknotes, identify currencies or establish independent specimen performance. Class labels stay `0` and `1`: the source does not explicitly map them to physical genuine/forged status. Vote fractions, leaf fractions and nearest-neighbor fractions are not calibrated probabilities or confidence intervals.
 
-## New in v0.2: joint permutation audit
+## Joint permutation audit
 
 [Open the joint permutation inspector](https://midya8.github.io/forestlab/permutation.html). Freeze the selected forest and its stronger 5NN control; move each of the **15 nonempty feature blocks** using the same **16 fixed row bijections**. All 240 cases and **129,600 model-row prediction counts** stay visible, including negative error changes. Follow a donor/recipient row, inspect all repeats on a shared scale and download the full witness.
 
@@ -59,7 +67,7 @@ Nearest-neighbor standardization uses train means/scales only. Logistic regulari
 
 ## Checks
 
-**31 Python tests and nine Node/real-Chrome tests** cover:
+The original and permutation workflows have 31 Python tests and nine Node/real-Chrome tests, retained in the current suite of 39 and 12. They cover:
 
 - 60 tiny independent Fraction split oracles, independently enumerated again with JavaScript BigInt mask counts;
 - fresh reproduction of every forest, single tree and fitted control, full bootstrap/source/node audits, training-only preprocessing and final logistic stationarity;
@@ -78,7 +86,7 @@ Established CART, bootstrap aggregation and random-forest methods are attributed
 
 Packaging: the full report is stored as gzip/base64 with a SHA-256 of its decompressed JSON. Python and the browser verify that digest before reading it. The browser uses native DecompressionStream and Web Crypto; Node22+/current Chrome are tested. This packaging is lossless and does not change a fit, source value, split or score. The export forwards the exact checked archive rather than depending on platform-specific compression.
 
-## v0.3 / Frozen leaf-collision geometry
+## Frozen leaf-collision geometry
 
 The [leaf-collision inspector](https://midya8.github.io/forestlab/proximity.html) exposes all-tree proximity as an explicit leaf-indicator Gram matrix, with exact integer/BigInt sum-of-squares witnesses. A separate jointly-OOB view retains every pair's eligible denominator and undefined entries. A constructed three-row table gives an exact negative OOB quadratic form (-2) and a triangle-inequality failure; it does not claim that every OOB matrix is indefinite. Feature-only edits cannot borrow training identity.
 
