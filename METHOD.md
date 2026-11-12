@@ -1,4 +1,4 @@
-# Method, conventions and limits
+# ForestLab fitting and evaluation method
 
 ## Unit and split
 
