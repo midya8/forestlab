@@ -43,6 +43,7 @@ python -m forestlab predict --input /tmp/features.json
 python -m forestlab export --output /tmp/forestlab-web
 python -m unittest discover -s tests -v
 node --test tests/*.cjs
+python examples/check_installed.py
 ```
 
 Python 3.10+ and NumPy are the only runtime requirements. Node 22+ and Chrome are needed for the independent scalar/browser tests. Set `CHROME_BIN` if Chrome is not named `google-chrome`. Open `docs/index.html` directly for the offline inspector. No network fonts or model downloads.
@@ -75,6 +76,8 @@ The original and permutation workflows have 31 Python tests and nine Node/real-C
 - rejection of source/split, bootstrap-count, split-gain, metric, model-configuration and selection mutations;
 - 10,784 native/scalar-JavaScript forest evaluations, 8,088 control scores, 6,464 OOB eligibility lists and 992 complete path witnesses;
 - actual Chrome form states for every model and partition, all 992 paths, physical-keyboard feature edits that drop membership, invalid-input clearing/recovery, clipboard success/failure, JSON Blob download and 320/390/1280px layouts.
+
+The full installed-suite check builds a wheel in a clean environment, copies only tests and fixtures outside the checkout, and runs all 39 Python tests there. It checks all ten installed module origins before and after the suite, compares 14 complete CLI reports with the source run, and checks both fresh JSON files and every file in the three exports. Run it with `python examples/check_installed.py`.
 
 The installed-wheel check imports all ten modules including the root outside the checkout, runs all ten commands, re-fits and audits every candidate, and reproduces the original, permutation and proximity web exports. The added diagnostic has all-case native/scalar checks, strict CLI controls, exact tiny permutation oracles and 1,230 actual browser states; see PERMUTATION.md. Floating numerical comparisons use finite bounds; original source, source grouping, discrete votes, paths and checked archive exports have exact checks. Regenerated control-score references allow only finite numerical agreement across platforms. See [METHOD.md](METHOD.md) for formulas, conventions, evidence and limits.
 
