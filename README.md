@@ -1,12 +1,12 @@
-# ForestLab
+# Random forests
 
-ForestLab fits binary CART forests to the UCI Banknote Authentication numeric descriptors. It orders Gini split candidates using exact integer comparisons and retains every bootstrap count. An editable browser separates all-tree predictions from votes made only by trees that did not train on a given group.
+Random forests fits binary CART forests to the UCI Banknote Authentication numeric descriptors. It orders Gini split candidates using exact integer comparisons and retains every bootstrap count. An editable browser separates all-tree predictions from votes made only by trees that did not train on a given group.
 
 Three inspectors use the same frozen fits:
 
 - Original predictions and paths: compare the forest with the single-tree, logistic and nearest-neighbor controls; inspect bootstrap and out-of-bag membership.
-- [Joint permutation](https://midya8.github.io/forestlab/permutation.html): move supplied feature blocks using fixed row bijections. See [PERMUTATION.md](PERMUTATION.md).
-- [Leaf collisions](https://midya8.github.io/forestlab/proximity.html): compare all-tree proximity with the separately normalized jointly-out-of-bag view. See [PROXIMITY.md](PROXIMITY.md).
+- [Joint permutation](https://midya8.github.io/random-forests/permutation.html): move supplied feature blocks using fixed row bijections. See [PERMUTATION.md](PERMUTATION.md).
+- [Leaf collisions](https://midya8.github.io/random-forests/proximity.html): compare all-tree proximity with the separately normalized jointly-out-of-bag view. See [PROXIMITY.md](PROXIMITY.md).
 
 No estimator library, model API, private data or account is needed.
 
@@ -18,7 +18,7 @@ This is an educational benchmark on the original UCI numeric image descriptors. 
 
 ## Joint permutation audit
 
-[Open the joint permutation inspector](https://midya8.github.io/forestlab/permutation.html). Freeze the selected forest and its stronger 5NN control; move each of the **15 nonempty feature blocks** using the same **16 fixed row bijections**. All 240 cases and **129,600 model-row prediction counts** stay visible, including negative error changes. Follow a donor/recipient row, inspect all repeats on a shared scale and download the full witness.
+[Open the joint permutation inspector](https://midya8.github.io/random-forests/permutation.html). Freeze the selected forest and its stronger 5NN control; move each of the **15 nonempty feature blocks** using the same **16 fixed row bijections**. All 240 cases and **129,600 model-row prediction counts** stay visible, including negative error changes. Follow a donor/recipient row, inspect all repeats on a shared scale and download the full witness.
 
 This reuses the validation set that already selected the models, not a fresh test set. Within-block values move together; recipient labels stay put. A three-row exact control shows how singleton masking can leave observed support while joint masking does not. Joint changes are not additive or isolated causal interactions. Shuffle ranges are not confidence intervals, vote fractions are not calibrated confidence, and no feature-removal refit or reselection is performed. Original training, models, splits and test scores are unchanged. See [PERMUTATION.md](PERMUTATION.md).
 
@@ -91,6 +91,6 @@ Packaging: the full report is stored as gzip/base64 with a SHA-256 of its decomp
 
 ## Frozen leaf-collision geometry
 
-The [leaf-collision inspector](https://midya8.github.io/forestlab/proximity.html) exposes all-tree proximity as an explicit leaf-indicator Gram matrix, with exact integer/BigInt sum-of-squares witnesses. A separate jointly-OOB view retains every pair's eligible denominator and undefined entries. A constructed three-row table gives an exact negative OOB quadratic form (-2) and a triangle-inequality failure; it does not claim that every OOB matrix is indefinite. Feature-only edits cannot borrow training identity.
+The [leaf-collision inspector](https://midya8.github.io/random-forests/proximity.html) exposes all-tree proximity as an explicit leaf-indicator Gram matrix, with exact integer/BigInt sum-of-squares witnesses. A separate jointly-OOB view retains every pair's eligible denominator and undefined entries. A constructed three-row table gives an exact negative OOB quadratic form (-2) and a triangle-inequality failure; it does not claim that every OOB matrix is indefinite. Feature-only edits cannot borrow training identity.
 
 39 Python and 12 Node/Chrome tests cover exhaustive 512 small partition tables, 6,272 direct source-pair checks, complete 1,152 mixed-partition and 4,608 heatmap references, 1,152 actual pair UI states and 13,824 heatmap colors. Ten-module/ten-command installed reproduction retains all original fresh fits and permutation audits. Original models, data, bootstrap counts and results stay unchanged. Model geometry is not semantic similarity, uncertainty, causal influence or new predictive performance. [Equations, source discrepancy and limits](PROXIMITY.md).
